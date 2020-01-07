@@ -247,11 +247,11 @@
   document.getElementById('login_btn').addEventListener('click', redirectToLogin, false);
 
 </script>
-@if($errors->has('user'))
+@if($errors->has('emailSend'))
                       @foreach ($errors->all() as $error)
                       <script>
     
-                        toastr.success('User Created Successfully');
+                        toastr.success('Email has been send. Please Verify Your Account');
                         setTimeout(() => {
                             window.location = window.location.origin + "/form/login";
                         }, 5000);
@@ -259,4 +259,15 @@
                       @endforeach
                       @endif
 
+                      @if($errors->has('userFound'))
+                      @foreach ($errors->all() as $error)
+                      <script>
+    
+                        toastr.error('Email already Exists');
+                        
+                        </script>
+                      @endforeach
+                      @endif
+
+                      
 @endsection

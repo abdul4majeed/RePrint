@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Mail\WeclomeMail;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
 
@@ -18,14 +20,24 @@ class RegisterationController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            // Authentication passed...
-            if(Session::has('document'))
+
+            if(Auth::user()->email_verified_at == null)
             {
-                return redirect()->route('shops.index');
+                Auth::logout();
+                return redirect()->route('login')->withErrors(['please_verify'=>'Please Activate Your Account']);
+
             }
             else
             {
-                return redirect()->route('client_dashboard');
+                // Authentication passed...
+                if(Session::has('document'))
+                {
+                    return redirect()->route('shops.index');
+                }
+                else
+                {
+                    return redirect()->route('client_dashboard');
+                }
             }
         }
         else
@@ -39,15 +51,23 @@ class RegisterationController extends Controller
         $data = $request->except('confirmpassword');
         $data['password'] = bcrypt($data['password']);
         $user = User::where('email', '=', $request->get('email'))->first();
+        $data['token'] = md5( time().'-'.time());
         if ($user === null) {
-            if(User::create($data))
+            if($user = User::create($data))
             {
-                return back()->withErrors(['user'=>'User Created Successfully'])->withInput($request->except('confirmpassword'));
+                $url_host = env('APP_URL','http:localhost');
+
+                $url_host = ($url_host.'/verify_account');
+            
+                $data = ['name' => $user->firstname,'email'=>$user->email,'token'=>$user->token,'url'=>$url_host];
+                Mail::to($user->email)->send(new WeclomeMail($data));
+                
+                return back()->withErrors(['emailSend'=>'Email has been send. Please Verify Your Account.'])->withInput($request->except('confirmpassword'));
             }
         }
         else
         {
-           return back()->withErrors(['email'=>'Email already Exist'])->withInput($data);;
+           return back()->withErrors(['userFound'=>'Email already Exist'])->withInput($data);;
         }
         
     }

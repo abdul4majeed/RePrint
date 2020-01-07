@@ -186,4 +186,44 @@
                       @endforeach
                       @endif
 
+                      @if($errors->has('emailsucc'))
+                      @foreach ($errors->all() as $error)
+                      <script>
+    
+                        toastr.success('Account Verified.Please Login');
+                        </script>
+                      @endforeach
+                      @endif
+
+                      @if($errors->has('emailalreadyverify'))
+                      @foreach ($errors->all() as $error)
+                      <script>
+    
+                        toastr.info('Account Already Verified.Please Login');
+                        </script>
+                      @endforeach
+                      @endif
+
+                      @if($errors->has('accountnofound'))
+                      @foreach ($errors->all() as $error)
+                      <script>
+    
+                        toastr.warning('Sorry Your email cannot be verified.');
+                        </script>
+                      @endforeach
+                      @endif
+
+                      @if($errors->has('please_verify'))
+                      @foreach ($errors->all() as $error)
+                      <script>
+    
+                        toastr.info('Please Verify Your Account.');
+                        </script>
+                      @endforeach
+                      @endif
+
+                      
+                      
+
+                      
 @endsection

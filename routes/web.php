@@ -11,9 +11,13 @@
 |
 */
 
+use App\Mail\WeclomeMail;
 use App\Shop;
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Mail;
 
 Route::get('/', function () {
     return view('index');
@@ -112,4 +116,41 @@ Route::post('/register',"RegisterationController@user_registeration")->name('reg
 Route::post('/login',"RegisterationController@user_login")->name('loginProcess');
 
 Route::get('/logout',"RegisterationController@user_logout")->name('logoutProcess');
+
+Route::get('sendmail',function(){
+
+    $url_host = env('APP_URL','http:localhost');
+
+    $url_host = ($url_host.'/verify_account');
+
+    $data = ['name' => 'Abdul Majeed','email'=>'abdul4majeed@gmail.com','token'=>time().'-'.time(),'url'=>$url_host];
+    Mail::to('reprint0project@gmail.com')->send(new WeclomeMail($data));
+
+
+        echo 'Msg Sended';
+});
+
+Route::get('verify_account/{email}/{token}',function($email,$token ){
+    $user = User::where('email',$email)->where('token',$token)->first();
+    if($user == null)
+    {
+        return redirect()->route('login')->withErrors(['accountnofound'=>'Sorry Your email can not be verified.']);
+    }
+    else
+    {
+        if($user != null  && $user->email_verified_at == null)
+        {
+            $user->email_verified_at = Carbon::now();
+            $user->save();
+    
+            return redirect()->route('login')->withErrors(['emailsucc'=>'Your account has been activated.Please try to login.']);
+    
+        }
+        else
+        {
+            return redirect()->route('login')->withErrors(['emailalreadyverify'=>'Your email is already verified.']);
+        }
+    }
+
+})->name('verify_account');
 
