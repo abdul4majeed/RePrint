@@ -62,7 +62,7 @@
       <div class="container">
         <div class="row align-items-center justify-content-center">
           <div class="col-md-7 text-center">
-            <h1 class="mb-4 text-white">Login</h1>
+            <h1 class="mb-4 text-white">Forget Password</h1>
           </div>
         </div>
       </div>
@@ -78,10 +78,10 @@
       <div class="container">
         <div class="row">
           <div class="col-lg-12 mb-5" >
-            <form action="{{route('loginProcess')}}" method="post" autocomplete="off">
+            <form action="{{route('forgetPasswordProcess')}}" method="post" autocomplete="off">
                 {{csrf_field()}}
                 <div class="form-group row">
-                  <div class="col-md-6 mb-4 mb-lg-0">
+                  <div class="col-md-12 mb-4 mb-lg-0">
                     <input type="email" class="form-control" value="{{old('email')}}" name="email" placeholder="Email*">
                     @if($errors->has('email'))
                     @foreach ($errors->all() as $error)
@@ -92,22 +92,9 @@
                     @endforeach
                     @endif
                   </div>
-                  <div class="col-md-6">
-                    <input type="password" class="form-control" name="password" placeholder="Password*">
-                    @if($errors->has('password'))
-                    @foreach ($errors->all() as $error)
-                        @if(strpos($error,'password') !== false)
-                        <small class="text-danger">{{ $error }} </small>
-                        @break
-                        @endif
-                    @endforeach
-                    @endif
-                  </div>
-                </div>
               <div class="form-group row">
-                <div class="col-md-6 m-auto">
-                  <input type="submit" class="btn btn-block btn-primary text-white py-3 px-5" value="Login">
-                  <input type="button" class="btn btn-block btn-primary text-white py-3 px-5" value="Reset Password" id="forget-form">
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-block btn-primary text-white py-3 px-5">Send Mail</button>
                 </div>
               </div>
             </form>
@@ -178,14 +165,6 @@
 
 @section('footer')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
-<script>
-    function redirectToLogin()
-    {
-        window.location.href = window.location.origin + "/form/forget/password";
-    }
-  document.getElementById('forget-form').addEventListener('click', redirectToLogin, false);
-
-</script>
 @if($errors->has('loginerror'))
                       @foreach ($errors->all() as $error)
                       <script>
@@ -195,44 +174,6 @@
                       @endforeach
                       @endif
 
-                      @if($errors->has('emailsucc'))
-                      @foreach ($errors->all() as $error)
-                      <script>
-    
-                        toastr.success('Account Verified.Please Login');
-                        </script>
-                      @endforeach
-                      @endif
-
-                      @if($errors->has('emailalreadyverify'))
-                      @foreach ($errors->all() as $error)
-                      <script>
-    
-                        toastr.info('Account Already Verified.Please Login');
-                        </script>
-                      @endforeach
-                      @endif
-
-                      @if($errors->has('accountnofound'))
-                      @foreach ($errors->all() as $error)
-                      <script>
-    
-                        toastr.warning('Sorry Your email cannot be verified.');
-                        </script>
-                      @endforeach
-                      @endif
-
-                      @if($errors->has('please_verify'))
-                      @foreach ($errors->all() as $error)
-                      <script>
-    
-                        toastr.info('Please Verify Your Account.');
-                        </script>
-                      @endforeach
-                      @endif
-
-                      
-                      
-
+                     
                       
 @endsection

@@ -47,6 +47,10 @@ Route::get('/form/register', function () {
     return view('register');
 })->name('register');
 
+Route::get('form/forget/password', function () {
+    return view('resetpassword.forgetpassword');
+})->name('forgetpassword');
+
 Route::get('/single', function () {
     return view('single');
 })->name('single');
@@ -117,18 +121,23 @@ Route::post('/login',"RegisterationController@user_login")->name('loginProcess')
 
 Route::get('/logout',"RegisterationController@user_logout")->name('logoutProcess');
 
-Route::get('sendmail',function(){
+Route::post('/forget/password','RegisterationController@forget_password')->name('forgetPasswordProcess');
 
-    $url_host = env('APP_URL','http:localhost');
+Route::get('/reset/password/{token}/{email}', 'RegisterationController@showPasswordResetForm')->name('reset-password-form');
+Route::post('/reset/password/{token}/{email}', 'RegisterationController@resetPassword')->name('reset-password');
 
-    $url_host = ($url_host.'/verify_account');
+// Route::get('sendmail',function(){
 
-    $data = ['name' => 'Abdul Majeed','email'=>'abdul4majeed@gmail.com','token'=>time().'-'.time(),'url'=>$url_host];
-    Mail::to('reprint0project@gmail.com')->send(new WeclomeMail($data));
+//     $url_host = env('APP_URL','http:localhost');
+
+//     $url_host = ($url_host.'/verify_account');
+
+//     $data = ['name' => 'Abdul Majeed','email'=>'abdul4majeed@gmail.com','token'=>time().'-'.time(),'url'=>$url_host];
+//     Mail::to('reprint0project@gmail.com')->send(new WeclomeMail($data));
 
 
-        echo 'Msg Sended';
-});
+//         echo 'Msg Sended';
+// });
 
 Route::get('verify_account/{email}/{token}',function($email,$token ){
     $user = User::where('email',$email)->where('token',$token)->first();

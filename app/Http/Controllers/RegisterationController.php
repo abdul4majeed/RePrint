@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Mail\ForgetPasswordMail;
 use App\Mail\WeclomeMail;
 use App\User;
+use DB;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 
@@ -78,6 +82,66 @@ class RegisterationController extends Controller
         return redirect()->route('home')->withErrors(['loginmsg'=>'You Successfully Logout.Hope You Come Back Again.']);
 
     }
+
+    public function forget_password(Request $request)
+    {
+        $user = User::where ('email', $request->email)->first();
+        if ( !$user ) return redirect()->back()->withErrors(['error' => '404']);
+
+        //create a new token to be sent to the user. 
+        DB::table('password_resets')->insert([
+            'email' => $request->email,
+            'token' => (time().'4'.time()), //change 60 to any length you want
+            'created_at' => Carbon::now()
+        ]);
+
+        $tokenData = DB::table('password_resets')
+        ->where('email', $request->email)->first();
+
+    $token = $tokenData->token;
+    $email = $request->email; // or $email = $tokenData->email;
+
+
+    $data = ['token' => $token,'email'=>$email];
+    Mail::to($request->email)->send(new ForgetPasswordMail($data));
+    /**
+        * Send email to the email above with a link to your password reset
+        * something like url('password-reset/' . $token)
+        * Sending email varies according to your Laravel version. Very easy to implement
+        */
+    }
+
+    public function showPasswordResetForm($token,$email)
+    {
+        $tokenData = DB::table('password_resets')
+        ->where('token', $token)->first();
+
+        if ( !$tokenData ) return redirect()->to('home'); //redirect them anywhere you want if the token does not exist.
+        return view('resetpassword.reset-token-form')->with('token',$token)->with('email',$email);
+    }
+
+    public function resetPassword(Request $request, $token,$email)
+    {
+        //some validation
+
+        $password = $request->password;
+        $tokenData = DB::table('password_resets')
+        ->where('token', $token)->first();
+
+        $user = User::where('email', $tokenData->email)->first();
+        if ( !$user ) return redirect()->to('home'); //or wherever you want
+
+        $user->password = Hash::make($password);
+        $user->update(); //or $user->save();
+
+        //do we log the user directly or let them login and try their password for the first time ? if yes 
+        Auth::login($user);
+
+        // If the user shouldn't reuse the token later, delete the token 
+        DB::table('password_resets')->where('email', $user->email)->delete();
+
+    }
+
 
 
     
