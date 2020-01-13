@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderDocumentsTable extends Migration
+class CreatePaymentTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateOrderDocumentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_documents', function (Blueprint $table) {
+        Schema::create('payment_types', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->integer('order_id');
+            $table->string('payment_name');
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ class CreateOrderDocumentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_documents');
+        Schema::dropIfExists('payment_types');
     }
 }

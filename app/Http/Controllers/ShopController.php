@@ -84,4 +84,37 @@ class ShopController extends Controller
     {
         //
     }
+
+    public function get_shop_services(Request $req)
+    {
+        session()->put('shop_id',$req->shop_id);
+        $shop = Shop::find($req->shop_id);
+        $data = [];
+    
+        foreach ($shop->services as $service) {
+            $main_service = $service;
+            // $shop_services = [
+                $main_service_data = [
+                    'id' => $main_service->id,
+                    'name' => $main_service->service_name,
+                    'price' => $main_service->service_price,
+                    'sub_services' => [],
+                // ], 
+                ];
+    
+            foreach($main_service->sub_services as $sub_service)
+            {
+               $shop_sub_services = [
+                    'id' => $sub_service->id,
+                    'name' => $sub_service->sub_service_name,
+                    'price' => $sub_service->sub_service_price,
+                 ];
+                 array_push($main_service_data['sub_services'],$shop_sub_services);
+    
+            }
+            array_push($data,$main_service_data);
+           
+        }
+        return view('shop_services')->with('services',$data);
+    }
 }

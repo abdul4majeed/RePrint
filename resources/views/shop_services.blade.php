@@ -100,9 +100,9 @@
                       </button>
                     </div>
                     <div class="modal-body">
-                      <input type="radio" name="payment" value="myfatorah"> MyFatorah
-                      <input type="radio" name="payment" value="tap"> Tap
-                      <input type="radio" name="payment" value="cash_on_delivery"> Cash on Delivery
+                      <input type="radio" name="payment" value="1"> MyFatorah
+                      <input type="radio" name="payment" value="2"> Tap
+                      <input type="radio" name="payment" value="3"> Cash on Delivery
                     </div>
                     <div class="modal-footer">
                       <button type="submit" class="btn btn-primary" >Proceed</button>

@@ -83,7 +83,7 @@
                 {{csrf_field()}}
                 <div class="input-group mb-3">
                     <div class="custom-file">
-                      <input type="file" class="custom-file-input" id="inputGroupFile02" name="file" required>
+                      <input type="file" class="custom-file-input" id="inputGroupFile02" multiple name="file[]" required>
                       <label class="custom-file-label" for="inputGroupFile02" id="file_name" required name="file" aria-describedby="inputGroupFileAddon02">Choose file</label>
                     </div>
                     <div class="input-group-append">

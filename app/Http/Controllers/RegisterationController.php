@@ -98,17 +98,17 @@ class RegisterationController extends Controller
         $tokenData = DB::table('password_resets')
         ->where('email', $request->email)->first();
 
-    $token = $tokenData->token;
-    $email = $request->email; // or $email = $tokenData->email;
+        $token = $tokenData->token;
+        $email = $request->email; // or $email = $tokenData->email;
 
 
-    $data = ['token' => $token,'email'=>$email];
-    Mail::to($request->email)->send(new ForgetPasswordMail($data));
-    /**
-        * Send email to the email above with a link to your password reset
-        * something like url('password-reset/' . $token)
-        * Sending email varies according to your Laravel version. Very easy to implement
-        */
+        $data = ['token' => $token,'email'=>$email];
+        Mail::to($request->email)->send(new ForgetPasswordMail($data));
+        /**
+            * Send email to the email above with a link to your password reset
+            * something like url('password-reset/' . $token)
+            * Sending email varies according to your Laravel version. Very easy to implement
+            */
     }
 
     public function showPasswordResetForm($token,$email)
@@ -142,6 +142,29 @@ class RegisterationController extends Controller
 
     }
 
+    public function verify_email($email,$token)
+    {
+        $user = User::where('email',$email)->where('token',$token)->first();
+        if($user == null)
+        {
+            return redirect()->route('login')->withErrors(['accountnofound'=>'Sorry Your email can not be verified.']);
+        }
+        else
+        {
+            if($user != null  && $user->email_verified_at == null)
+            {
+                $user->email_verified_at = Carbon::now();
+                $user->save();
+        
+                return redirect()->route('login')->withErrors(['emailsucc'=>'Your account has been activated.Please try to login.']);
+        
+            }
+            else
+            {
+                return redirect()->route('login')->withErrors(['emailalreadyverify'=>'Your email is already verified.']);
+            }
+        }
+    }
 
 
     

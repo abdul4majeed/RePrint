@@ -8,7 +8,7 @@
         
         <link href="{{asset('reprint/ALT/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
         <!-- font Awesome -->
-        <link href="{{asset('reprint/ALT/css//font-awesome.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{asset('reprint/ALT/css/font-awesome.min.css')}}" rel="stylesheet" type="text/css" />
         <!-- Ionicons -->
         <link href="{{asset('reprint/ALT/css/ionicons.min.css')}}" rel="stylesheet" type="text/css" />
         <!-- Morris chart -->
