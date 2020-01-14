@@ -86,7 +86,18 @@
                     <td>{{$order->payment_status_relation->status}} </td>
                     <td>{{$order->order_status_relation->status}} </td>
                     @if($order->order_status_relation->id == 4)
-                    <td>Show Survey Button - {{$order->order_status_relation->id}}</td>
+                        @if($order->feed_back == 0)
+                    <td>
+                        <form action="{{route('client_survey')}}" method="post">
+                            {{csrf_field()}}
+                            <input type="hidden" value="{{$order->shop_id}}" name="shop_id">
+                            <input type="hidden" value="{{$order->id}}" name="order_id">
+                            <button type="submit">Start Survey</button>
+                        </form>
+                    </td>
+                        @else
+                        <td>Thansk for Survey</td>
+                        @endif
                     @else
                     <td></td>
                     @endif

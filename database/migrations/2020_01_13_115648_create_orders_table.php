@@ -25,6 +25,7 @@ class CreateOrdersTable extends Migration
             $table->integer('admin_notification')->default(0);
             $table->integer('order_status')->default(0);
             $table->integer('payment_status')->default(0);
+            $table->integer('feed_back')->default(0);
             $table->integer('payment_id')->nullable();
             $table->timestamps();
         });
